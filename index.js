@@ -88,6 +88,10 @@ CmdWindowCoveringAccessory.prototype = {
 		windowCoveringService
 			.getCharacteristic(Characteristic.TargetPosition)
 			.on('set', this.setState.bind(this));
+			
+		windowCoveringService
+			.getCharacteristic(Characteristic.PositionState)
+			.on('get', this.getPosState.bind(this));
 
 		return [windowCoveringService];
 	}
