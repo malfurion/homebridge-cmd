@@ -45,7 +45,7 @@ WaremaShadeAccessory.prototype = {
 		if (isOpen < this.currentState) {
 			cmd = this.close_cmd;
 			this.log("Closing Window Covering");
-			this.currentState = isOpen
+			this.currentState = isOpen;
 			if (isOpen != 0) {
 				timeouttime = (this.secs * (this.currentState - isOpen)) / 100;
 				this.log(timeouttime);
@@ -54,7 +54,7 @@ WaremaShadeAccessory.prototype = {
 		} else {
 			cmd = this.open_cmd;
 			this.log("Opening Window Covering");
-			this.currentState = isOpen
+			this.currentState = isOpen;
 			if (isOpen != 100) {
 				timeouttime = (this.secs * (isOpen - this.currentState)) / 100;
 				this.log(timeouttime);
