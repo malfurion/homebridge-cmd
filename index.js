@@ -53,7 +53,7 @@ WaremaShadeAccessory.prototype = {
 	},
 	
 	getState: function(callback) {
-		callback(null, currentState);
+		callback(null, this.currentState);
 	},
 	
 	getPosState: function(callback) {
