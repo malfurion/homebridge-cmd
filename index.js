@@ -4,20 +4,21 @@ var exec = require("child_process").exec;
 module.exports = function(homebridge){
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
-  homebridge.registerAccessory("homebridge-cmd", "CMD", CmdAccessory);
+  homebridge.registerAccessory("homebridge-cmd-windowcovering", "CMD_WINDOWCOVERING", CmdWindowCoveringAccessory);
 }
 
 
-function CmdAccessory(log, config) {
+function CmdWindowCoveringAccessory(log, config) {
 	this.log = log;
 
 	// url info
-	this.on_cmd   = config["on_cmd"];
-	this.off_cmd  = config["off_cmd"];
+	this.open_cmd   = config["open_cmd"];
+	this.close_cmd  = config["close_cmd"];
+	this.currentState = "opened";
 	this.name = config["name"];
 }
 
-CmdAccessory.prototype = {
+CmdWindowCoveringAccessory.prototype = {
 
 	cmdRequest: function(cmd, callback) {
 		exec(cmd,function(error, stdout, stderr) {
@@ -25,15 +26,17 @@ CmdAccessory.prototype = {
 			})
 	},
 
-	setPowerState: function(powerOn, callback) {
+	setState: function(callback) {
 		var cmd;
 
-		if (powerOn) {
-			cmd = this.on_cmd;
+		if (this.currentState == "opened") {
+			cmd = this.close_cmd;
 			this.log("Setting power state to on");
+			this.currentState = "closed"
 		} else {
-			cmd = this.off_cmd;
+			cmd = this.open_cmd;
 			this.log("Setting power state to off");
+			this.currentState = "opened"
 		}
 
 		this.cmdRequest(cmd, function(error, stdout, stderr) {
@@ -46,6 +49,14 @@ CmdAccessory.prototype = {
 				this.log(stdout);
 			}
 		}.bind(this));
+	},
+	
+	getState: function() {
+		if (this.currentState == "open") {
+			callback(null, true);
+		} else {
+			callback(null, false);
+		}
 	},
 
 	identify: function(callback) {
@@ -64,11 +75,19 @@ CmdAccessory.prototype = {
 			.setCharacteristic(Characteristic.Model, "cmd Model")
 			.setCharacteristic(Characteristic.SerialNumber, "cmd Serial Number");
 
-		var switchService = new Service.Switch(this.name);
+		var windowCoveringService = new Service.WindowCovering(this.name);
 
-		switchService
-			.getCharacteristic(Characteristic.On)
-			.on('set', this.setPowerState.bind(this));
+		windowCoveringService
+			.getCharacteristic(Characteristic.CurrentPosition)
+			.on('set', this.getState.bind(this));
+		
+		windowCoveringService
+			.getCharacteristic(Characteristic.TargetPosition)
+			.on('set', this.setState.bind(this));
+			
+		windowCoveringService
+			.getCharacteristic(Characteristic.PositionState)
+			.on('set', this.getState.bind(this));
 
 		return [switchService];
 	}
