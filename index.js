@@ -31,7 +31,7 @@ WaremaShadeAccessory.prototype = {
 	setState: function(isOpen, callback) {
 		var cmd;
 		
-		if (isOpen < currentState) {
+		if (isOpen < this.currentState) {
 			cmd = this.close_cmd;
 			this.log("Closing Window Covering");
 			this.currentState = isOpen
