@@ -26,10 +26,10 @@ CmdWindowCoveringAccessory.prototype = {
 			})
 	},
 
-	setState: function(callback) {
+	setState: function(isOpen, callback) {
 		var cmd;
 
-		if (this.currentState == "opened") {
+		if (isOpen) {
 			cmd = this.close_cmd;
 			this.log("Setting power state to on");
 			this.currentState = "closed"
