@@ -31,20 +31,20 @@ CmdWindowCoveringAccessory.prototype = {
 
 		if (isOpen) {
 			cmd = this.close_cmd;
-			this.log("Setting power state to on");
+			this.log("Closing Window Covering");
 			this.currentState = "closed"
 		} else {
 			cmd = this.open_cmd;
-			this.log("Setting power state to off");
+			this.log("Opening Window Covering");
 			this.currentState = "opened"
 		}
 
 		this.cmdRequest(cmd, function(error, stdout, stderr) {
 			if (error) {
-				this.log('power function failed: %s', stderr);
+				this.log('CMD function failed: %s', stderr);
 				callback(error);
 			} else {
-				this.log('power function succeeded!');
+				this.log('CMD function succeeded!');
 				callback();
 				this.log(stdout);
 			}
@@ -53,10 +53,14 @@ CmdWindowCoveringAccessory.prototype = {
 	
 	getState: function(callback) {
 		if (this.currentState == "opened") {
-			callback(null, true);
+			callback(true);
 		} else {
-			callback(null, false);
+			callback(false);
 		}
+	},
+	
+	getPosState: function(callback) {
+		callback(Characteristic.PositionState.STOPPED);
 	},
 
 	identify: function(callback) {
@@ -83,11 +87,11 @@ CmdWindowCoveringAccessory.prototype = {
 		
 		windowCoveringService
 			.getCharacteristic(Characteristic.TargetPosition)
-			.on('set', this.setState.bind(this));
+			.on('get', this.setState.bind(this));
 			
 		windowCoveringService
 			.getCharacteristic(Characteristic.PositionState)
-			.on('set', this.getState.bind(this));
+			.on('getpos', this.getPosState.bind(this));
 
 		return [windowCoveringService];
 	}
