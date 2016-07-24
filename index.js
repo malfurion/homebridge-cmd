@@ -27,6 +27,17 @@ WaremaShadeAccessory.prototype = {
 				callback(error, stdout, stderr)
 			})
 	},
+	
+	stopCmd: function() {
+		cmd = this.stop_cmd;
+		this.cmdRequest(cmd, function(error, stdout, stderr) {
+			if (error) {
+				this.log('CMD function failed: %s', stderr);
+			} else {
+				this.log('CMD function succeeded!');
+			}
+		}.bind(this));
+	}
 
 	setState: function(isOpen, callback) {
 		var cmd;
@@ -35,10 +46,20 @@ WaremaShadeAccessory.prototype = {
 			cmd = this.close_cmd;
 			this.log("Closing Window Covering");
 			this.currentState = isOpen
+			if (isOpen != 0) {
+				timeouttime = (this.secs * (this.currentState - isOpen)) / 100;
+				this.log(timeouttime);
+				setTimeout(stopCmd, timeouttime).bind(this);
+			}
 		} else {
 			cmd = this.open_cmd;
 			this.log("Opening Window Covering");
 			this.currentState = isOpen
+			if (isOpen != 100) {
+				timeouttime = (this.secs * (isOpen - this.currentState)) / 100;
+				this.log(timeouttime);
+				setTimeout(stopCmd, timeouttime).bind(this);
+			}
 		}
 
 		this.cmdRequest(cmd, function(error, stdout, stderr) {
