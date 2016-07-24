@@ -37,7 +37,7 @@ WaremaShadeAccessory.prototype = {
 				this.log('CMD function succeeded!');
 			}
 		}.bind(this));
-	}
+	},
 
 	setState: function(isOpen, callback) {
 		var cmd;
