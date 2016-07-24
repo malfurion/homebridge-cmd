@@ -52,7 +52,7 @@ CmdWindowCoveringAccessory.prototype = {
 	},
 	
 	getState: function(callback) {
-		if (this.currentState == "open") {
+		if (this.currentState == "opened") {
 			callback(null, true);
 		} else {
 			callback(null, false);
