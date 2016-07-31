@@ -162,7 +162,7 @@ WaremaLightAccessory.prototype = {
 		}.bind(this));
 	},
 	
-	getState: function(isState, callback) {
+	getState: function(callback) {
 		callback(null, this.currentState);
 	},
 
