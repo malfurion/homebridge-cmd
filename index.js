@@ -17,7 +17,7 @@ function WaremaShadeAccessory(log, config) {
 	this.close_cmd  = config["close_cmd"];
 	this.stop_cmd   = config["stop_cmd"];
 	this.secs       = config["secs"];
-	this.currentState = 100;
+	this.currentState = config["startState"];
 	this.name = config["name"];
 	this.timeout = null;
 }
